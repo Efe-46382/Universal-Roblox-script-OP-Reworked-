@@ -179,6 +179,14 @@ Section2:NewToggle("Anti ragdoll", "prevents you from being ragdolled", function
     end
 end)
 
+Section2:NewToggle("Walk in air", "Lets your character walk in the air", function(state)
+    if state then
+        game.Players.LocalPlayer.Character.Humanoid.HipHeight = 20
+    else
+        game.Players.LocalPlayer.Character.Humanoid.HipHeight = 0
+    end
+end)
+
 
 local function ApplyESP(plr)
     local function createHighlight(char)
@@ -276,6 +284,54 @@ Section3:NewButton("Explode yourself", "Explodes your character (Client only)", 
     end
 end)
 
+local Section4 = Tab2:NewSection("Remote Exploitation")
+
+local targetName = ""
+local foundRemote = nil
+
+Section4:NewTextBox("Target Player", "Username", function(txt)
+    targetName = txt
+end)
+
+Section4:NewButton("Scan for kill Remotes", "Scans ReplicatedStorage for events", function()
+    local keywords = {"Damage", "Kill", "Health", "Hit", "Life", "Death", "Die", "KillAll", "kill", "Admin"}
+    local storage = game:GetService("ReplicatedStorage")
+    
+    for _, v in pairs(storage:GetDescendants()) do
+        if v:IsA("RemoteEvent") then
+            for _, keyword in pairs(keywords) do
+                if string.find(v.Name:lower(), keyword:lower()) then
+                    foundRemote = v
+                    print("Potential Remote Found: " .. v.Name)
+                    break
+                end
+            end
+        end
+    end
+    
+    if foundRemote then
+        print("Scan Complete", "Found potential remote: " .. foundRemote.Name, 5)
+    else
+        print("Scan Failed", "No obvious kill remotes found.", 5)
+    end
+end)
+
+Section4:NewButton("Execute Kill", "Fires the detected remote", function()
+    local targetPlr = game.Players:FindFirstChild(targetName)
+    
+    if not targetPlr then
+        print("Error", "Player not found", 3)
+        return
+    end
+
+    if foundRemote then
+        foundRemote:FireServer(targetPlr, math.huge)
+        foundRemote:FireServer(targetPlr.Character, math.huge)
+        print("Fired", "Sent signal to " .. foundRemote.Name, 3)
+    else
+        print("Error", "No remote selected/found. Run Scan first.", 3)
+    end
+end)
 
 local Tab4 = Window:NewTab("Credits")
 local CreditsSection = Tab4:NewSection("Credits Info")
