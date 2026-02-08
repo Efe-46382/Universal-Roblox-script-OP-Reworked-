@@ -7,11 +7,11 @@ local Window = Library.CreateLib("Universal Hub", "Ocean")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
+local Lighting = game:GetService("Lighting")
 local LocalPlayer = Players.LocalPlayer
+
 local NoRagdoll = false
 local connection
-
-
 local SpeedValue = 16
 local JumpValue = 50
 local InfiniteJumpEnabled = false
@@ -20,6 +20,15 @@ local flySpeed = 50
 local mover, att, heartbeatConnection
 local espEnabled = false
 
+-- Storage for Full Bright toggle
+local originalSettings = {
+    Brightness = Lighting.Brightness,
+    ClockTime = Lighting.ClockTime,
+    FogEnd = Lighting.FogEnd,
+    GlobalShadows = Lighting.GlobalShadows,
+    Ambient = Lighting.Ambient,
+    OutdoorAmbient = Lighting.OutdoorAmbient
+}
 
 local Tab = Window:NewTab("Local Player")
 local Section = Tab:NewSection("Player")
@@ -27,7 +36,7 @@ local Tab2 = Window:NewTab("Main")
 local Section2 = Tab2:NewSection("Main")
 local ESPSection = Tab2:NewSection("Visuals")
 
-
+-- Background Loop for Speed/Jump
 task.spawn(function()
     while task.wait() do
         pcall(function()
@@ -39,7 +48,7 @@ task.spawn(function()
     end
 end)
 
-
+-- Player Section
 Section:NewSlider("Speed changer", "Changes your speed", 500, 16, function(s)
     SpeedValue = s
 end)
@@ -48,7 +57,7 @@ Section:NewSlider("Jump power", "Changes your jump power", 300, 50, function(j)
     JumpValue = j
 end)
 
-Section:NewButton("Reset walkspeed and jump power", "Resets your walkspeed and jump power to default", function()
+Section:NewButton("Reset walkspeed and jump power", "Resets to default", function()
     SpeedValue = 16
     JumpValue = 50
 end)
@@ -67,6 +76,7 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
+-- Main Section
 Section2:NewButton("Toggle Fly", "Enables/Disables flight", function()
     local camera = workspace.CurrentCamera
     local char = LocalPlayer.Character
@@ -111,7 +121,7 @@ Section2:NewTextBox("Fly Speed", "Set speed (Default 50)", function(txt)
 end)
 
 Section2:NewToggle("Noclip", "Makes your character Noclip", function(state)
-                _G.noclip = state
+    _G.noclip = state
     
     task.spawn(function()
         while _G.noclip do
@@ -130,8 +140,8 @@ Section2:NewToggle("Noclip", "Makes your character Noclip", function(state)
             for _, v in pairs(LocalPlayer.Character:GetDescendants()) do
                 if v:IsA("BasePart") then
                     v.CanCollide = true
-                game.Players.LocalPlayer.Character.Humanoid.JumpPower = 1
-                game.Players.LocalPlayer.Character.Humanoid.Jump = true
+                    game.Players.LocalPlayer.Character.Humanoid.JumpPower = 1
+                    game.Players.LocalPlayer.Character.Humanoid.Jump = true
                 end
             end
         end
@@ -152,7 +162,6 @@ end)
 
 Section2:NewToggle("Anti ragdoll", "prevents you from being ragdolled", function(state)
     NoRagdoll = state
-
     local function disableRagdoll(character)
         local humanoid = character:WaitForChild("Humanoid", 5)
         if humanoid then
@@ -162,22 +171,15 @@ Section2:NewToggle("Anti ragdoll", "prevents you from being ragdolled", function
     end
 
     if NoRagdoll then
-        if LocalPlayer.Character then
-            disableRagdoll(LocalPlayer.Character)
-        end
+        if LocalPlayer.Character then disableRagdoll(LocalPlayer.Character) end
         connection = LocalPlayer.CharacterAdded:Connect(disableRagdoll)
     else
-        if connection then
-            connection:Disconnect()
-            connection = nil
-        end
-        if LocalPlayer.Character then
-            disableRagdoll(LocalPlayer.Character)
-        end
+        if connection then connection:Disconnect() connection = nil end
+        if LocalPlayer.Character then disableRagdoll(LocalPlayer.Character) end
     end
 end)
 
-
+-- Visuals Section
 local function ApplyESP(plr)
     local function createHighlight(char)
         if not char:FindFirstChild("ESP_Highlight") then
@@ -191,15 +193,10 @@ local function ApplyESP(plr)
     end
 
     plr.CharacterAdded:Connect(function(char)
-        if espEnabled then
-            task.wait(0.5)
-            createHighlight(char)
-        end
+        if espEnabled then task.wait(0.5) createHighlight(char) end
     end)
     
-    if plr.Character and espEnabled then
-        createHighlight(plr.Character)
-    end
+    if plr.Character and espEnabled then createHighlight(plr.Character) end
 end
 
 ESPSection:NewToggle("Player ESP", "Highlights all players", function(state)
@@ -218,6 +215,32 @@ end)
 
 Players.PlayerAdded:Connect(ApplyESP)
 
+ESPSection:NewToggle("Full Bright", "Makes game bright and removes shadows", function(state)
+    if state then
+        originalSettings.Brightness = Lighting.Brightness
+        originalSettings.ClockTime = Lighting.ClockTime
+        originalSettings.FogEnd = Lighting.FogEnd
+        originalSettings.GlobalShadows = Lighting.GlobalShadows
+        originalSettings.Ambient = Lighting.Ambient
+        originalSettings.OutdoorAmbient = Lighting.OutdoorAmbient
+
+        Lighting.Brightness = 2
+        Lighting.ClockTime = 14
+        Lighting.FogEnd = 100000
+        Lighting.GlobalShadows = false
+        Lighting.Ambient = Color3.fromRGB(255, 255, 255)
+        Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+    else
+        Lighting.Brightness = originalSettings.Brightness
+        Lighting.ClockTime = originalSettings.ClockTime
+        Lighting.FogEnd = originalSettings.FogEnd
+        Lighting.GlobalShadows = originalSettings.GlobalShadows
+        Lighting.Ambient = originalSettings.Ambient
+        Lighting.OutdoorAmbient = originalSettings.OutdoorAmbient
+    end
+end)
+
+-- Misc Section
 local Tab3 = Window:NewTab("Misc")
 local Section3 = Tab3:NewSection("Misc")
 
@@ -228,7 +251,6 @@ end)
 
 Section3:NewButton("Click teleport tool", "Gives you the click teleport tool", function()
     local player = game:GetService("Players").LocalPlayer
-    
     local tpTool = Instance.new("Tool")
     tpTool.Name = "Click TP"
     tpTool.RequiresHandle = false
@@ -237,16 +259,14 @@ Section3:NewButton("Click teleport tool", "Gives you the click teleport tool", f
     tpTool.Activated:Connect(function()
         local mouse = player:GetMouse()
         local pos = mouse.Hit.Position
-        
         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             player.Character.HumanoidRootPart.CFrame = CFrame.new(pos + Vector3.new(0, 3, 0))
         end
     end)
 end)
 
+-- Credits Section
 local Tab4 = Window:NewTab("Credits")
 local CreditsSection = Tab4:NewSection("Credits Info")
-
 CreditsSection:NewLabel("Script made by RobloxPlayer31is")
 CreditsSection:NewLabel("Kavo UI made by xHeptc")
---More coming soon
