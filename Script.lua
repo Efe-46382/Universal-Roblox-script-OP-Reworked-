@@ -20,7 +20,7 @@ local flySpeed = 50
 local mover, att, heartbeatConnection
 local espEnabled = false
 
--- Storage for Full Bright toggle
+
 local originalSettings = {
     Brightness = Lighting.Brightness,
     ClockTime = Lighting.ClockTime,
@@ -36,7 +36,7 @@ local Tab2 = Window:NewTab("Main")
 local Section2 = Tab2:NewSection("Main")
 local ESPSection = Tab2:NewSection("Visuals")
 
--- Background Loop for Speed/Jump
+
 task.spawn(function()
     while task.wait() do
         pcall(function()
@@ -48,7 +48,7 @@ task.spawn(function()
     end
 end)
 
--- Player Section
+
 Section:NewSlider("Speed changer", "Changes your speed", 500, 16, function(s)
     SpeedValue = s
 end)
@@ -76,7 +76,7 @@ UserInputService.JumpRequest:Connect(function()
     end
 end)
 
--- Main Section
+
 Section2:NewButton("Toggle Fly", "Enables/Disables flight", function()
     local camera = workspace.CurrentCamera
     local char = LocalPlayer.Character
@@ -179,7 +179,7 @@ Section2:NewToggle("Anti ragdoll", "prevents you from being ragdolled", function
     end
 end)
 
--- Visuals Section
+
 local function ApplyESP(plr)
     local function createHighlight(char)
         if not char:FindFirstChild("ESP_Highlight") then
@@ -240,7 +240,7 @@ ESPSection:NewToggle("Full Bright", "Makes game bright and removes shadows", fun
     end
 end)
 
--- Misc Section
+
 local Tab3 = Window:NewTab("Misc")
 local Section3 = Tab3:NewSection("Misc")
 
@@ -265,7 +265,18 @@ Section3:NewButton("Click teleport tool", "Gives you the click teleport tool", f
     end)
 end)
 
--- Credits Section
+Section3:NewButton("Explode yourself", "Explodes your character (Client only)", function()
+    local player = game.Players.LocalPlayer
+    if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        local explosion = Instance.new("Explosion")
+        explosion.BlastRadius = 100
+        explosion.BlastPressure = 9999999
+        explosion.Position = player.Character.HumanoidRootPart.Position
+        explosion.Parent = player.Character.HumanoidRootPart
+    end
+end)
+
+
 local Tab4 = Window:NewTab("Credits")
 local CreditsSection = Tab4:NewSection("Credits Info")
 CreditsSection:NewLabel("Script made by RobloxPlayer31is")
