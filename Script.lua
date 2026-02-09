@@ -284,6 +284,11 @@ Section3:NewButton("Explode yourself", "Explodes your character (Client only)", 
     end
 end)
 
+Section3:NewButton("Bypass first person view", "Lets you use third person view", function()
+    game.Players.LocalPlayer.CameraMode = Enum.CameraMode.Classic
+    print("Bypassed!")
+end)
+
 local Section4 = Tab2:NewSection("Remote Exploitation")
 
 local targetName = ""
