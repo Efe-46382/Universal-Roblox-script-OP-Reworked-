@@ -306,6 +306,38 @@ Section3:NewButton("Bypass first person view", "Lets you use third person view",
     print("Bypassed!")
 end)
 
+Section3:NewButton("Speed tool", "Become Usain Bolt!", function()
+    local player = game.Players.LocalPlayer
+    local tool = Instance.new("Tool")
+    tool.Name = "Speed Coil"
+    tool.RequiresHandle = false
+    tool.Parent = player.Backpack
+
+    tool.Equipped:Connect(function()
+        SpeedValue = 60
+    end)
+
+    tool.Unequipped:Connect(function()
+        SpeedValue = 16
+    end)
+end)
+
+Section3:NewButton("Jump tool", "Jump like a bunny!", function()
+    local player = game.Players.LocalPlayer
+    local tool = Instance.new("Tool")
+    tool.Name = "Jump Coil"
+    tool.RequiresHandle = false
+    tool.Parent = player.Backpack
+
+    tool.Equipped:Connect(function()
+        JumpValue = 130
+    end)
+
+    tool.Unequipped:Connect(function()
+        JumpValue = 50
+    end)
+end)
+
 local Section4 = Tab2:NewSection("Remote Exploitation")
 
 local targetName = ""
