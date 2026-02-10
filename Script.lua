@@ -179,11 +179,28 @@ Section2:NewToggle("Anti ragdoll", "prevents you from being ragdolled", function
     end
 end)
 
+local RunService = game:GetService("RunService")
+local player = game.Players.LocalPlayer
+local walkInAirConnection = nil
+
 Section2:NewToggle("Walk in air", "Lets your character walk in the air", function(state)
     if state then
-        game.Players.LocalPlayer.Character.Humanoid.HipHeight = 20
+        walkInAirConnection = RunService.Heartbeat:Connect(function()
+            local character = player.Character
+            if character and character:FindFirstChild("Humanoid") then
+                character.Humanoid.HipHeight = 20
+            end
+        end)
     else
-        game.Players.LocalPlayer.Character.Humanoid.HipHeight = 0
+        if walkInAirConnection then
+            walkInAirConnection:Disconnect()
+            walkInAirConnection = nil
+        end
+        
+        local character = player.Character
+        if character and character:FindFirstChild("Humanoid") then
+            character.Humanoid.HipHeight = 0
+        end
     end
 end)
 
