@@ -332,7 +332,7 @@ Section4:NewButton("Execute Kill", "Fires the detected remote", function()
     if foundRemote then
         foundRemote:FireServer(targetPlr, math.huge)
         foundRemote:FireServer(targetPlr.Character, math.huge)
-        print("Fired", "Sent signal to " .. foundRemote.Name, 3)
+        print("Fired", "Sent signal to " .. foundRemote.Name, "NOTE: IT WORKS BY SCANNING THE NAME OF THE REMOTE SO EVEN IF FOUND IT MIGHT NOT WORK!")
     else
         print("Error", "No remote selected/found. Run Scan first.", 3)
     end
