@@ -12,7 +12,7 @@ local LocalPlayer = Players.LocalPlayer
 
 local NoRagdoll = false
 local connection
-local SpeedValue = 16
+local SpeedValue = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed
 local JumpValue = 50
 local InfiniteJumpEnabled = false
 local flying = false
@@ -73,6 +73,52 @@ UserInputService.JumpRequest:Connect(function()
         if hum then
             hum:ChangeState(Enum.HumanoidStateType.Jumping)
         end
+    end
+end)
+
+local SitConnection = false
+local AntiSitConnection = false
+
+Section:NewToggle("Sit", "Makes your character sit", function(state)
+    SitConnection = state
+    if state then
+        task.spawn(function()
+            while SitConnection do
+                local character = LocalPlayer.Character
+                local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+                if humanoid and not humanoid.Sit then
+                    humanoid.Sit = true
+                end
+                task.wait(0.2)
+            end
+        end)
+    else
+        local character = LocalPlayer.Character
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.Sit = false
+            game.Players.LocalPlayer.Character.Humanoid.JumpPower = 2
+            humanoid.Jump = true 
+        end
+    end
+end)
+
+Section:NewToggle("Anti sit", "Prevents your character from sitting", function(state)
+    AntiSitConnection = state
+    if state then
+        SitConnection = false 
+        
+        task.spawn(function()
+            while AntiSitConnection do
+                local character = LocalPlayer.Character
+                local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+                
+                if humanoid and humanoid.Sit then
+                    humanoid.Sit = false
+                end
+                task.wait()
+            end
+        end)
     end
 end)
 
