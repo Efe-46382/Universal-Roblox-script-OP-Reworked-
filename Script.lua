@@ -437,3 +437,8 @@ local Tab4 = Window:NewTab("Credits")
 local CreditsSection = Tab4:NewSection("Credits Info")
 CreditsSection:NewLabel("Script made by RobloxPlayer31is")
 CreditsSection:NewLabel("Kavo UI made by xHeptc")
+
+local Tab5 = Window:NewTab("Game")
+local GameSection = Tab5:NewSection("Game info")
+GameSection:NewLabel("Current game ID: " .. game.PlaceId)
+GameSection:NewLabel("Creator ID: " .. game.CreatorId)
