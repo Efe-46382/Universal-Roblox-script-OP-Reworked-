@@ -312,8 +312,8 @@ ESPSection:NewToggle("Full Bright", "Makes game bright and removes shadows", fun
 end)
 
 
-local Tab3 = Window:NewTab("Misc")
-local Section3 = Tab3:NewSection("Misc")
+local Tab3 = Window:NewTab("Tools/Client-side control")
+local Section3 = Tab3:NewSection("Tools/Client-side control")
 
 Section3:NewButton("Spawn Brick", "Client Sided", function()
     local Part = Instance.new("Part", workspace)
