@@ -356,10 +356,27 @@ Section3:NewButton("Speed tool", "Become Usain Bolt!", function()
     local player = game.Players.LocalPlayer
     local tool = Instance.new("Tool")
     tool.Name = "Speed Coil"
-    tool.RequiresHandle = false
+    tool.RequiresHandle = true
+    tool.CanBeDropped = false
+    tool.ToolTip = "Makes you super fast!"
+    
+    local Handle = Instance.new("Part")
+    Handle.Name = "Handle"
+    Handle.Size = Vector3.new(1, 1, 1)
+    Handle.BrickColor = BrickColor.new("Bright blue")
+    Handle.Material = Enum.Material.Neon
+    Handle.Parent = tool
+
+    local Sound = Instance.new("Sound")
+    Sound.Name = "EquipSound"
+    Sound.SoundId = "rbxassetid://99173388"
+    Sound.Volume = 0.5
+    Sound.Parent = Handle
+
     tool.Parent = player.Backpack
 
     tool.Equipped:Connect(function()
+        Sound:Play()
         SpeedValue = 60
     end)
 
@@ -372,16 +389,53 @@ Section3:NewButton("Jump tool", "Jump like a bunny!", function()
     local player = game.Players.LocalPlayer
     local tool = Instance.new("Tool")
     tool.Name = "Jump Coil"
-    tool.RequiresHandle = false
+    tool.RequiresHandle = true
+    tool.CanBeDropped = false
+    tool.ToolTip = "Makes you jump high!"
+    
+    local Handle1 = Instance.new("Part")
+    Handle1.Name = "Handle"
+    Handle1.Size = Vector3.new(1, 1, 1)
+    Handle1.BrickColor = BrickColor.new("Bright red")
+    Handle1.Material = Enum.Material.Neon
+    Handle1.Parent = tool
+
+    local Sound = Instance.new("Sound")
+    Sound.Name = "EquipSound"
+    Sound.SoundId = "rbxassetid://16619553"
+    Sound.Volume = 0.5
+    Sound.Parent = Handle1
+
     tool.Parent = player.Backpack
 
     tool.Equipped:Connect(function()
+        Sound:Play()
         JumpValue = 130
     end)
 
     tool.Unequipped:Connect(function()
         JumpValue = 50
     end)
+end)
+
+local Tacos
+
+local SectionMusic = Tab3:NewSection("Music")
+
+SectionMusic:NewToggle("Play its Raining Tacos", "Plays music", function(state)
+    if state then
+        Tacos = Instance.new("Sound")
+        Tacos.Parent = game:GetService("SoundService")
+        Tacos.SoundId = "rbxassetid://142376088"
+        Tacos.Looped = true
+        Tacos:Play()
+    else
+        if Tacos then
+            Tacos:Stop()
+            Tacos:Destroy()
+            Tacos = nil
+        end
+    end
 end)
 
 local Section4 = Tab2:NewSection("Remote Exploitation")
