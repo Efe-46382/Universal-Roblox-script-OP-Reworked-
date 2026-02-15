@@ -418,6 +418,45 @@ Section3:NewButton("Jump tool", "Jump like a bunny!", function()
     end)
 end)
 
+local ORIGINAL_GRAVITY = workspace.Gravity
+local COIL_GRAVITY = 50
+local JUMP_BOOST = 100
+
+Section3:NewButton("Gravity Coil", "Float like in space!", function()
+    local tool = Instance.new("Tool")
+    tool.Name = "Gravity Coil"
+    tool.RequiresHandle = true
+    tool.CanBeDropped = false
+    tool.ToolTip = "lowers your gravity!"
+
+    local Handle2 = Instance.new("Part")
+    Handle2.Name = "Handle"
+    Handle2.Material = "Neon"
+    Handle2.Size = Vector3.new(1, 1, 1)
+    Handle2.Color = Color3.fromRGB(10, 60, 255)
+    Handle2.Parent = tool
+
+    local Sound = Instance.new("Sound")
+    Sound.Name = "EQUIPS"
+    Sound.SoundId = "rbxassetid://16619553"
+    Sound.Volume = 0.5
+    Sound.Parent = Handle2
+
+    tool.Parent = player.Backpack
+
+    tool.Equipped:Connect(function()
+        Sound:Play()
+        workspace.Gravity = COIL_GRAVITY
+        humanoid.UseJumpPower = true
+        JumpValue = JUMP_BOOST
+    end)
+
+    tool.Unequipped:Connect(function()
+        workspace.Gravity = ORIGINAL_GRAVITY
+        JumpValue = 50 
+    end)
+end)
+
 local Tacos
 
 local SectionMusic = Tab3:NewSection("Music")
