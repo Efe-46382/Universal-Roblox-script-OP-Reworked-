@@ -447,7 +447,11 @@ Section3:NewButton("Gravity Coil", "Float like in space!", function()
     tool.Equipped:Connect(function()
         Sound:Play()
         workspace.Gravity = COIL_GRAVITY
-        humanoid.UseJumpPower = true
+        local character = player.Character
+        local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+        if humanoid then
+            humanoid.UseJumpPower = true
+        end
         JumpValue = JUMP_BOOST
     end)
 
@@ -503,9 +507,9 @@ Section4:NewButton("Scan for kill Remotes", "Scans ReplicatedStorage for events"
     end
     
     if foundRemote then
-        print("Scan Complete", "Found potential remote: " .. foundRemote.Name, 5)
+        print("Scan Complete", "Found potential remote: " .. foundRemote.Name)
     else
-        print("Scan Failed", "No obvious kill remotes found.", 5)
+        print("Scan Failed", "No obvious kill remotes found.")
     end
 end)
 
@@ -513,16 +517,16 @@ Section4:NewButton("Execute Kill", "Fires the detected remote", function()
     local targetPlr = game.Players:FindFirstChild(targetName)
     
     if not targetPlr then
-        print("Error", "Player not found", 3)
+        print("Error: Player not found")
         return
     end
 
     if foundRemote then
         foundRemote:FireServer(targetPlr, math.huge)
         foundRemote:FireServer(targetPlr.Character, math.huge)
-        print("Fired", "Sent signal to " .. foundRemote.Name, "NOTE: IT WORKS BY SCANNING THE NAME OF THE REMOTE SO EVEN IF FOUND IT MIGHT NOT WORK!")
+        print("Fired: Sent signal to " .. foundRemote.Name)
     else
-        print("Error", "No remote selected/found. Run Scan first.", 3)
+        print("Error: No remote selected/found.")
     end
 end)
 
@@ -536,3 +540,49 @@ local GameSection = Tab5:NewSection("Game info")
 GameSection:NewLabel("Current place ID: " .. game.PlaceId)
 GameSection:NewLabel("Current game ID: " .. game.GameId)
 GameSection:NewLabel("Creator ID: " .. game.CreatorId)
+
+local Tab6 = Window:NewTab("User")
+local UserSection = Tab6:NewSection("User info")
+UserSection:NewLabel("Welcome " .. game.Players.LocalPlayer.Name .. "!")
+UserSection:NewLabel("User ID: " .. game.Players.LocalPlayer.UserId)
+
+local Tab7 = Window:NewTab("Toggle/key binds")
+local toggleSection = Tab7:NewSection("Toggle/key binds")
+toggleSection:NewKeybind("Toggle UI (P)", "Toggles UI", Enum.KeyCode.P, function()
+    Library:ToggleUI()
+end)
+
+
+local ScreenGui = Instance.new("ScreenGui")
+local ToggleButton = Instance.new("TextButton")
+
+ScreenGui.Name = "UniversalHubToggle"
+ScreenGui.Parent = game.CoreGui
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+ToggleButton.Name = "ToggleButton"
+ToggleButton.Parent = ScreenGui
+ToggleButton.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ToggleButton.BorderSizePixel = 0
+ToggleButton.Position = UDim2.new(0, 10, 0.5, -20)
+ToggleButton.Size = UDim2.new(0, 80, 0, 40)
+ToggleButton.Font = Enum.Font.SourceSansBold
+ToggleButton.Text = "TOGGLE"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.TextSize = 14
+ToggleButton.Draggable = true
+
+local UICorner = Instance.new("UICorner")
+UICorner.CornerRadius = UDim.new(0, 8)
+UICorner.Parent = ToggleButton
+
+local UIGradient = Instance.new("UIGradient")
+UIGradient.Color = ColorSequence.new{
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 170, 255)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 85, 127))
+}
+UIGradient.Parent = ToggleButton
+
+ToggleButton.MouseButton1Click:Connect(function()
+    Library:ToggleUI()
+end)
