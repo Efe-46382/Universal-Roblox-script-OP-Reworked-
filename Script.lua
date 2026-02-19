@@ -586,3 +586,28 @@ UIGradient.Parent = ToggleButton
 ToggleButton.MouseButton1Click:Connect(function()
     Library:ToggleUI()
 end)
+
+task.spawn(function()
+    local coreGui = game:GetService("CoreGui")
+    local targetHub = nil
+
+    while not targetHub do
+        for _, v in pairs(coreGui:GetChildren()) do
+            if v:IsA("ScreenGui") and v:FindFirstChild("Main") then
+                targetHub = v
+                break
+            end
+        end
+        task.wait(0.5)
+    end
+
+    targetHub.AncestryChanged:Connect(function(_, parent)
+        if not parent then
+            ScreenGui:Destroy()
+        end
+    end)
+
+    targetHub.Main.Destroying:Connect(function()
+        ScreenGui:Destroy()
+    end)
+end)
