@@ -12,8 +12,10 @@ local LocalPlayer = Players.LocalPlayer
 
 local NoRagdoll = false
 local connection
-local SpeedValue = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed
-local JumpValue = 50
+local OriginalSpeed = game.Players.LocalPlayer.Character.Humanoid.WalkSpeed
+local OriginalJump = game.Players.LocalPlayer.Character.Humanoid.JumpPower
+local SpeedValue = OriginalSpeed
+local JumpValue = OriginalJump
 local InfiniteJumpEnabled = false
 local flying = false
 local flySpeed = 50
@@ -49,11 +51,11 @@ task.spawn(function()
 end)
 
 
-Section:NewSlider("Speed changer", "Changes your speed", 500, 16, function(s)
+Section:NewSlider("Speed changer", "Changes your speed", 500, OriginalSpeed, function(s)
     SpeedValue = s
 end)
 
-Section:NewSlider("Jump power", "Changes your jump power", 300, 50, function(j)
+Section:NewSlider("Jump power", "Changes your jump power", 300, OriginalJump, function(j)
     JumpValue = j
 end)
 
