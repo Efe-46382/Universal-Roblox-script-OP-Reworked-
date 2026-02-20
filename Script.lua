@@ -420,7 +420,6 @@ end)
 
 local ORIGINAL_GRAVITY = workspace.Gravity
 local COIL_GRAVITY = 50
-local JUMP_BOOST = 100
 
 Section3:NewButton("Gravity Coil", "Float like in space!", function()
     local tool = Instance.new("Tool")
@@ -452,12 +451,10 @@ Section3:NewButton("Gravity Coil", "Float like in space!", function()
         if humanoid then
             humanoid.UseJumpPower = true
         end
-        JumpValue = JUMP_BOOST
     end)
 
     tool.Unequipped:Connect(function()
         workspace.Gravity = ORIGINAL_GRAVITY
-        JumpValue = 50 
     end)
 end)
 
