@@ -8,6 +8,7 @@ local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 local Lighting = game:GetService("Lighting")
+local SoundService = game:GetService("SoundService")
 local LocalPlayer = Players.LocalPlayer
 
 local NoRagdoll = false
@@ -476,6 +477,39 @@ SectionMusic:NewToggle("Play its Raining Tacos", "Plays music", function(state)
             Tacos:Stop()
             Tacos:Destroy()
             Tacos = nil
+        end
+    end
+end)
+
+local SoundVol = 0.5
+
+local function applyVolume(sound)
+    if sound then
+        sound.Volume = SoundVol
+    end
+end
+
+SectionMusic:NewSlider("Music Volume", "Change the music volume", 10, 1, function(m)
+    SoundVol = m
+    local sound = game.SoundService:FindFirstChild("Sound")
+    applyVolume(sound)
+end)
+
+game.SoundService.ChildAdded:Connect(function(child)
+    if child.Name == "Sound" then
+        applyVolume(child)
+        child:GetPropertyChangedSignal("Volume"):Connect(function()
+            if child.Volume ~= SoundVol then
+                child.Volume = SoundVol
+            end
+        end)
+    end
+end)
+
+SectionMusic:NewButton("Destroy all music", "Deletes any sounds created", function()
+    for _, child in pairs(SoundService:GetChildren()) do
+        if child:IsA("Sound") then
+            child:Destroy()
         end
     end
 end)
