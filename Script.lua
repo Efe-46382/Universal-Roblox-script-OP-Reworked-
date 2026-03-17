@@ -463,6 +463,39 @@ Section3:NewButton("Gravity Coil", "Float like in space!", function()
 	end)
 end)
 
+Section3:NewButton("Click to Explode", "Client sided", function()
+    local tool = Instance.new("Tool")
+    tool.Name = "Explode Tool"
+    tool.RequiresHandle = false
+    tool.CanBeDropped = false
+    tool.Parent = player.Backpack
+
+    tool.Activated:Connect(function()
+        local mouse = player:GetMouse()
+        local pos = mouse.Hit.p
+        
+        local explosion = Instance.new("Explosion")
+        explosion.Position = pos
+        explosion.Parent = game.Workspace
+    end)
+end)
+
+Section3:NewButton("Click to destroy", "Client sided", function()
+    local tool = Instance.new("Tool")
+    tool.Name = "Destroy Tool"
+    tool.RequiresHandle = false
+    tool.CanBeDropped = false
+    tool.Parent = player.Backpack
+
+    tool.Activated:Connect(function()
+        local mouse = player:GetMouse()
+        local target = mouse.Target
+        if target and target.Name ~= "Baseplate" then
+            target:Destroy()
+        end
+    end)
+end)
+
 local Tacos
 
 local SectionMusic = Tab3:NewSection("Music")
